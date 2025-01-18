@@ -8,6 +8,18 @@ export default function Main() {
     imageUrl: "http://i.imgflip.com/1bij.jpg"
   })
 
+  const [allMemes, setAllMemes] = React.useState([])
+
+
+  function getMemeImage() {
+    const randomNumber = Math.floor(Math.random() * allMemes.length)
+    const newMemeURL = allMemes[randomNumber].url
+    setMeme(prevMeme => ({
+      ...prevMeme,
+      imageUrl: newMemeURL
+    }))
+  }
+  
   function handleChange(event) {
     const {value, name} = event.currentTarget
     setMeme(prevMeme => ({
@@ -15,6 +27,12 @@ export default function Main() {
       [name]: value
     }))
   }
+
+  React.useEffect(() => {
+    fetch("https://api.imgflip.com/get_memes")
+    .then(res => res.json())
+    .then(data => setAllMemes(data.data.memes))
+  }, [])
 
   return (
       <main>
@@ -38,7 +56,7 @@ export default function Main() {
                       value={meme.bottomText}
                   />
               </label>
-              <button>Get a new meme image 🖼</button>
+              <button onClick={getMemeImage}>Get a new meme image 🖼</button>
           </div>
           <div className="meme">
               <img src={meme.imageUrl} />
